@@ -31,10 +31,10 @@ export default function SalesPage() {
     setActivePayment({ reservation, bill });
   }
 
-  async function handlePaid() {
+  async function handlePaid(accountId: string) {
     if (!activePayment) return;
     const { reservation, bill } = activePayment;
-    const updated = await payBillRequest(reservation.id, bill.billNo);
+    const updated = await payBillRequest(reservation.id, bill.billNo, accountId);
     setLocalReservations((prev) => {
       const base = prev ?? data?.reservations ?? [];
       return base.map((r) => (r.id === updated.id ? updated : r));

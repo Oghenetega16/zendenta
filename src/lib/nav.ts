@@ -63,7 +63,14 @@ export const bottomNavItems: NavItem[] = [
 
 const allItems = [...navGroups.flatMap((g) => g.items), ...bottomNavItems];
 
+// Pages reachable from menus (e.g. the profile dropdown) but not part of
+// the sidebar itself still need a sensible Topbar title.
+const extraTitles: Record<string, string> = {
+  "/profile": "Profile",
+  "/settings": "Account Settings",
+};
+
 export function getPageTitle(pathname: string): string {
   const match = allItems.find((item) => item.href === pathname);
-  return match?.label ?? "Zendenta";
+  return match?.label ?? extraTitles[pathname] ?? "Zendenta";
 }

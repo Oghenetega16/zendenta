@@ -2,11 +2,14 @@ import { NextResponse } from "next/server";
 import { payBill } from "@/lib/server/store";
 
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string; billNo: string }> }
 ) {
   const { id, billNo } = await params;
-  const reservation = await payBill(decodeURIComponent(id), decodeURIComponent(billNo));
+  const body = await request.json().catch(() => ({}));
+  const accountId = typeof body.accountId === "string" ? body.accountId : undefined;
+
+  const reservation = await payBill(decodeURIComponent(id), decodeURIComponent(billNo), accountId);
 
   if (!reservation) {
     return NextResponse.json(

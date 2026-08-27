@@ -2,20 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Bell,
-  Bookmark,
-  Flag,
-  HelpCircle,
-  Loader2,
-  Plus,
-  Search,
-  X,
-} from "lucide-react";
+import { Loader2, Search, X } from "lucide-react";
 import { fetchReservations } from "@/lib/api-client";
 import { formatCurrency } from "@/lib/utils";
 import { Reservation } from "@/types";
 import { StatusBadge } from "@/components/StatusBadge";
+import { CreateMenu } from "@/components/topbar/CreateMenu";
+import { HelpMenu } from "@/components/topbar/HelpMenu";
+import { MarkedItemsMenu } from "@/components/topbar/MarkedItemsMenu";
+import { NotificationsMenu } from "@/components/topbar/NotificationsMenu";
+import { ProfileMenu } from "@/components/topbar/ProfileMenu";
 
 const MAX_RESULTS = 6;
 
@@ -237,58 +233,16 @@ export function Topbar({ title }: { title: string }) {
           )}
         </div>
 
-        <button
-          title="Create new"
-          aria-label="Create new"
-          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-indigo-600 text-white hover:bg-indigo-500"
-        >
-          <Plus size={17} />
-        </button>
+        <CreateMenu />
 
         <div className="hidden items-center gap-1 text-slate-400 sm:flex">
-          <button
-            title="Help"
-            aria-label="Help"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg hover:bg-slate-100 hover:text-slate-600"
-          >
-            <HelpCircle size={17} />
-          </button>
-          <button
-            title="Bookmarks"
-            aria-label="Bookmarks"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg hover:bg-slate-100 hover:text-slate-600"
-          >
-            <Bookmark size={17} />
-          </button>
-          <button
-            title="Flagged items"
-            aria-label="Flagged items"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg hover:bg-slate-100 hover:text-slate-600"
-          >
-            <Flag size={17} />
-          </button>
-          <button
-            title="Notifications"
-            aria-label="Notifications"
-            className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg hover:bg-slate-100 hover:text-slate-600"
-          >
-            <Bell size={17} />
-            <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-rose-500" />
-          </button>
+          <HelpMenu />
+          <MarkedItemsMenu kind="bookmark" storageKey="zendenta_bookmarks" />
+          <MarkedItemsMenu kind="flag" storageKey="zendenta_flags" />
+          <NotificationsMenu />
         </div>
 
-        <div className="ml-1 flex items-center gap-2.5 border-l border-slate-100 pl-3">
-          <div
-            title="Darrell Steward"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br from-amber-700 to-amber-900 text-xs font-semibold text-white"
-          >
-            DS
-          </div>
-          <div className="hidden text-left leading-tight md:block">
-            <p className="text-[13px] font-semibold text-slate-800">Darrell Steward</p>
-            <p className="text-[11px] text-slate-400">Super admin</p>
-          </div>
-        </div>
+        <ProfileMenu />
       </div>
     </header>
   );

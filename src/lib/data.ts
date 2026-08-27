@@ -1,4 +1,4 @@
-import { Account, Reservation } from "@/types";
+import { Account, Peripheral, PaymentMethodConfig, Purchase, Reservation, Stock } from "@/types";
 
 export const accounts: Account[] = [
   { id: "free-cash", name: "Free cash", isDefault: true, colorClass: "bg-emerald-500" },
@@ -112,6 +112,7 @@ export const reservations: Reservation[] = [
         label: "2 Treatment(s)",
         amount: 645,
         status: "paid",
+        accountId: "free-cash",
         billDate: "23/05/2022",
         billTo: { name: "Kathryn Murphy", address: "Jl. Melati No. 9, Jakarta Barat 11530" },
         lineItems: [{ id: "li9", label: "Treatment (2)", total: 645 }],
@@ -138,6 +139,7 @@ export const reservations: Reservation[] = [
         label: "Treatment",
         amount: 667,
         status: "paid",
+        accountId: "treatment-fund",
         billDate: "23/05/2022",
         billTo: { name: "Brooklyn Simmons", address: "Jl. Kenanga No. 3, Jakarta Timur 13450" },
         lineItems: [{ id: "li10", label: "Treatment (1)", total: 667 }],
@@ -164,6 +166,7 @@ export const reservations: Reservation[] = [
         label: "Treatment",
         amount: 343,
         status: "paid",
+        accountId: "free-cash",
         billDate: "23/05/2022",
         billTo: { name: "Bessie Cooper", address: "Jl. Anggrek No. 7, Jakarta Utara 14140" },
         lineItems: [{ id: "li11", label: "Treatment (1)", total: 343 }],
@@ -190,6 +193,7 @@ export const reservations: Reservation[] = [
         label: "Treatment",
         amount: 900,
         status: "paid",
+        accountId: "drug-purchase",
         billDate: "23/05/2022",
         billTo: { name: "Arlene McCoy", address: "Jl. Cempaka No. 18, Jakarta Pusat 10220" },
         lineItems: [{ id: "li12", label: "Treatment (1)", total: 900 }],
@@ -216,6 +220,7 @@ export const reservations: Reservation[] = [
         label: "Treatment",
         amount: 650,
         status: "paid",
+        accountId: "free-cash",
         billDate: "23/05/2022",
         billTo: { name: "Jane Cooper", address: "Jl. Mawar No. 5, Jakarta Selatan 12210" },
         lineItems: [{ id: "li13", label: "Treatment (1)", total: 650 }],
@@ -242,6 +247,7 @@ export const reservations: Reservation[] = [
         label: "Treatment",
         amount: 1200,
         status: "paid",
+        accountId: "stock-fund",
         billDate: "23/05/2022",
         billTo: { name: "Darrell Steward", address: "Jl. Kenari No. 11, Jakarta Barat 11440" },
         lineItems: [{ id: "li14", label: "Treatment (1)", total: 1200 }],
@@ -251,4 +257,88 @@ export const reservations: Reservation[] = [
       },
     ],
   },
+];
+
+export const stocks: Stock[] = [
+  { id: "stk-001", name: "Disposable Gloves (Box)", category: "PPE", unit: "box", quantity: 42, reorderThreshold: 20 },
+  { id: "stk-002", name: "Dental Anesthetic", category: "Medicine", unit: "vial", quantity: 8, reorderThreshold: 15 },
+  { id: "stk-003", name: "Composite Resin", category: "Consumable", unit: "syringe", quantity: 26, reorderThreshold: 10 },
+  { id: "stk-004", name: "Surgical Masks (Box)", category: "PPE", unit: "box", quantity: 60, reorderThreshold: 25 },
+  { id: "stk-005", name: "Gauze Pads (Pack)", category: "Consumable", unit: "pack", quantity: 12, reorderThreshold: 15 },
+  { id: "stk-006", name: "Amoxicillin 500mg", category: "Medicine", unit: "bottle", quantity: 5, reorderThreshold: 12 },
+  { id: "stk-007", name: "Impression Material", category: "Consumable", unit: "cartridge", quantity: 18, reorderThreshold: 8 },
+];
+
+export const purchases: Purchase[] = [
+  {
+    id: "po-1001",
+    item: "Disposable Gloves (Box)",
+    supplier: "MedSupply Co.",
+    quantity: 20,
+    unitCost: 8.5,
+    total: 170,
+    orderDate: "18/05/2022",
+    status: "received",
+    stockId: "stk-001",
+  },
+  {
+    id: "po-1002",
+    item: "Dental Anesthetic",
+    supplier: "PharmaDirect",
+    quantity: 15,
+    unitCost: 22,
+    total: 330,
+    orderDate: "20/05/2022",
+    status: "pending",
+    stockId: "stk-002",
+  },
+  {
+    id: "po-1003",
+    item: "Amoxicillin 500mg",
+    supplier: "PharmaDirect",
+    quantity: 10,
+    unitCost: 14,
+    total: 140,
+    orderDate: "21/05/2022",
+    status: "pending",
+    stockId: "stk-006",
+  },
+  {
+    id: "po-1004",
+    item: "Gauze Pads (Pack)",
+    supplier: "MedSupply Co.",
+    quantity: 20,
+    unitCost: 3.25,
+    total: 65,
+    orderDate: "22/05/2022",
+    status: "pending",
+    stockId: "stk-005",
+  },
+  {
+    id: "po-1005",
+    item: "Surgical Masks (Box)",
+    supplier: "SafeGuard Supplies",
+    quantity: 30,
+    unitCost: 6,
+    total: 180,
+    orderDate: "15/05/2022",
+    status: "received",
+    stockId: "stk-004",
+  },
+];
+
+export const peripherals: Peripheral[] = [
+  { id: "prp-001", name: "Intraoral Camera #1", type: "Imaging", assignedTo: "Room 1", status: "active", lastServiced: "02/04/2022" },
+  { id: "prp-002", name: "Dental Chair Unit A", type: "Chair", assignedTo: "Room 1", status: "active", lastServiced: "10/03/2022" },
+  { id: "prp-003", name: "Autoclave Sterilizer", type: "Sterilization", assignedTo: "Sterilization Room", status: "maintenance", lastServiced: "28/02/2022" },
+  { id: "prp-004", name: "X-Ray Machine", type: "Imaging", assignedTo: "Room 2", status: "active", lastServiced: "15/04/2022" },
+  { id: "prp-005", name: "Dental Chair Unit B", type: "Chair", assignedTo: "Room 2", status: "retired", lastServiced: "12/11/2021" },
+  { id: "prp-006", name: "Ultrasonic Scaler", type: "Instrument", assignedTo: "Room 1", status: "active", lastServiced: "05/05/2022" },
+];
+
+export const paymentMethods: PaymentMethodConfig[] = [
+  { id: "cash", label: "Cash", enabled: true, processingFee: 0 },
+  { id: "credit_card", label: "Credit card", enabled: true, processingFee: 2.5 },
+  { id: "bank_transfer", label: "Bank transfer", enabled: true, processingFee: 0.5 },
+  { id: "e_wallet", label: "E-wallet", enabled: false, processingFee: 1.5 },
 ];

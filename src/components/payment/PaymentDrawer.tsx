@@ -16,18 +16,18 @@ import {
   Smartphone,
   X,
 } from "lucide-react";
-import { Account, Bill, PaymentMethodType, Reservation } from "@/types";
-import { accounts } from "@/lib/data";
+import { Account, Bill, PaymentMethodConfig, PaymentMethodType, Reservation } from "@/types";
+import { fetchAccounts, fetchPaymentMethods } from "@/lib/api-client";
 import { cn, formatCurrency } from "@/lib/utils";
 
 type Step = "detail" | "cash" | "success";
 
-const methodOptions: { id: PaymentMethodType; label: string; icon: React.ElementType }[] = [
-  { id: "cash", label: "Cash", icon: Banknote },
-  { id: "credit_card", label: "Credit card", icon: CreditCard },
-  { id: "bank_transfer", label: "Bank transfer", icon: Landmark },
-  { id: "e_wallet", label: "E-wallet", icon: Smartphone },
-];
+const methodIcons: Record<PaymentMethodType, React.ElementType> = {
+  cash: Banknote,
+  credit_card: CreditCard,
+  bank_transfer: Landmark,
+  e_wallet: Smartphone,
+};
 
 const quickAmounts = [20, 30, 50, 100];
 
@@ -44,14 +44,37 @@ export function PaymentDrawer({
   reservation: Reservation;
   bill: Bill;
   onClose: () => void;
-  onPaid: () => void;
+  onPaid: (accountId: string) => void;
 }) {
   const [step, setStep] = useState<Step>("detail");
-  const [account, setAccount] = useState<Account>(accounts[0]);
+  const [accountsList, setAccountsList] = useState<Account[]>([]);
+  const [account, setAccount] = useState<Account | null>(null);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const [methods, setMethods] = useState<PaymentMethodConfig[] | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethodConfig | null>(null);
   const [note, setNote] = useState("");
   const [cashInput, setCashInput] = useState(bill.total.toFixed(2));
   const [showAllMethods, setShowAllMethods] = useState(false);
+
+  // Load live accounts and enabled payment methods (both configurable
+  // elsewhere in the app - Accounts and Payment Method settings pages).
+  useEffect(() => {
+    let ignore = false;
+    Promise.all([fetchAccounts(), fetchPaymentMethods()])
+      .then(([fetchedAccounts, fetchedMethods]) => {
+        if (ignore) return;
+        setAccountsList(fetchedAccounts);
+        setAccount(fetchedAccounts.find((a) => a.isDefault) ?? fetchedAccounts[0] ?? null);
+        setMethods(fetchedMethods);
+      })
+      .catch(() => {
+        if (ignore) return;
+        setMethods([]);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   // Lock scroll while open
   useEffect(() => {
@@ -76,9 +99,11 @@ export function PaymentDrawer({
 
   const cashValue = parseFloat(cashInput || "0") || 0;
   const change = Math.max(cashValue - bill.total, 0);
+  const enabledMethods = (methods ?? []).filter((m) => m.enabled);
 
-  function selectMethod(id: PaymentMethodType) {
-    if (id === "cash") {
+  function selectMethod(method: PaymentMethodConfig) {
+    setSelectedMethod(method);
+    if (method.id === "cash") {
       setStep("cash");
     } else {
       // Non-cash methods: treat as instantly confirmable for this demo
@@ -156,17 +181,22 @@ export function PaymentDrawer({
                     aria-label="Select account"
                     aria-haspopup="listbox"
                     aria-expanded={accountMenuOpen}
-                    className="flex w-full cursor-pointer items-center justify-between rounded-lg border border-slate-100 bg-slate-50/60 px-3 py-2.5 text-left"
+                    disabled={!account}
+                    className="flex w-full cursor-pointer items-center justify-between rounded-lg border border-slate-100 bg-slate-50/60 px-3 py-2.5 text-left disabled:cursor-wait"
                   >
-                    <span className="flex items-center gap-2 text-[13px] font-medium text-slate-700">
-                      <span className={cn("h-2 w-2 rounded-full", account.colorClass)} />
-                      {account.name}
-                      {account.isDefault && (
-                        <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[9.5px] font-bold text-slate-400 uppercase">
-                          Default
-                        </span>
-                      )}
-                    </span>
+                    {account ? (
+                      <span className="flex items-center gap-2 text-[13px] font-medium text-slate-700">
+                        <span className={cn("h-2 w-2 rounded-full", account.colorClass)} />
+                        {account.name}
+                        {account.isDefault && (
+                          <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[9.5px] font-bold text-slate-400 uppercase">
+                            Default
+                          </span>
+                        )}
+                      </span>
+                    ) : (
+                      <span className="text-[13px] text-slate-400">Loading accounts...</span>
+                    )}
                     <ChevronDown
                       size={15}
                       className={cn(
@@ -186,7 +216,7 @@ export function PaymentDrawer({
                         role="listbox"
                         className="absolute z-10 mt-1.5 w-full overflow-hidden rounded-lg border border-slate-100 bg-white py-1 shadow-lg"
                       >
-                        {accounts.map((a) => (
+                        {accountsList.map((a) => (
                           <button
                             key={a.id}
                             onClick={() => {
@@ -195,7 +225,7 @@ export function PaymentDrawer({
                             }}
                             title={a.name}
                             role="option"
-                            aria-selected={account.id === a.id}
+                            aria-selected={account?.id === a.id}
                             className="flex w-full cursor-pointer items-center justify-between px-3 py-2 text-left text-[13px] hover:bg-slate-50"
                           >
                             <span className="flex items-center gap-2 font-medium text-slate-700">
@@ -207,7 +237,7 @@ export function PaymentDrawer({
                                 </span>
                               )}
                             </span>
-                            {account.id === a.id && (
+                            {account?.id === a.id && (
                               <Check size={14} className="text-indigo-600" />
                             )}
                           </button>
@@ -308,33 +338,46 @@ export function PaymentDrawer({
                 <p className="mb-2 text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
                   Select a Payment Method
                 </p>
-                <div className="space-y-1.5">
-                  {(showAllMethods ? methodOptions : methodOptions.slice(0, 2)).map((m) => (
-                    <button
-                      key={m.id}
-                      onClick={() => selectMethod(m.id)}
-                      title={`Pay with ${m.label}`}
-                      aria-label={`Pay with ${m.label}`}
-                      className="flex w-full cursor-pointer items-center justify-between rounded-lg border border-slate-100 px-3.5 py-2.5 text-left hover:border-indigo-200 hover:bg-indigo-50/40"
-                    >
-                      <span className="flex items-center gap-2.5 text-[13px] font-medium text-slate-700">
-                        <m.icon size={16} className="text-slate-400" />
-                        {m.label}
-                      </span>
-                      <ChevronRight size={15} className="text-slate-300" />
-                    </button>
-                  ))}
-                </div>
-                {!showAllMethods && (
-                  <button
-                    onClick={() => setShowAllMethods(true)}
-                    title="Show more payment methods"
-                    aria-label="Show more payment methods"
-                    className="mt-2.5 flex cursor-pointer items-center gap-1 text-[12px] font-semibold text-indigo-600"
-                  >
-                    Show More
-                    <ChevronDown size={13} />
-                  </button>
+                {methods === null ? (
+                  <p className="text-[12.5px] text-slate-400">Loading payment methods...</p>
+                ) : enabledMethods.length === 0 ? (
+                  <p className="text-[12.5px] text-slate-400">
+                    No payment methods are enabled. Turn one on in Payment Method settings.
+                  </p>
+                ) : (
+                  <>
+                    <div className="space-y-1.5">
+                      {(showAllMethods ? enabledMethods : enabledMethods.slice(0, 2)).map((m) => {
+                        const Icon = methodIcons[m.id];
+                        return (
+                          <button
+                            key={m.id}
+                            onClick={() => selectMethod(m)}
+                            title={`Pay with ${m.label}`}
+                            aria-label={`Pay with ${m.label}`}
+                            className="flex w-full cursor-pointer items-center justify-between rounded-lg border border-slate-100 px-3.5 py-2.5 text-left hover:border-indigo-200 hover:bg-indigo-50/40"
+                          >
+                            <span className="flex items-center gap-2.5 text-[13px] font-medium text-slate-700">
+                              <Icon size={16} className="text-slate-400" />
+                              {m.label}
+                            </span>
+                            <ChevronRight size={15} className="text-slate-300" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {!showAllMethods && enabledMethods.length > 2 && (
+                      <button
+                        onClick={() => setShowAllMethods(true)}
+                        title="Show more payment methods"
+                        aria-label="Show more payment methods"
+                        className="mt-2.5 flex cursor-pointer items-center gap-1 text-[12px] font-semibold text-indigo-600"
+                      >
+                        Show More
+                        <ChevronDown size={13} />
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </motion.div>
@@ -352,8 +395,9 @@ export function PaymentDrawer({
                 bill={bill}
                 amountPaid={cashValue || bill.total}
                 change={change}
+                methodLabel={selectedMethod?.label ?? "Cash"}
                 onClose={() => {
-                  onPaid();
+                  onPaid(account?.id ?? "");
                   onClose();
                 }}
               />
@@ -456,12 +500,14 @@ function SuccessPanel({
   bill,
   amountPaid,
   change,
+  methodLabel,
   onClose,
 }: {
   reservation: Reservation;
   bill: Bill;
   amountPaid: number;
   change: number;
+  methodLabel: string;
   onClose: () => void;
 }) {
   return (
@@ -528,7 +574,7 @@ function SuccessPanel({
               <span>Payment method</span>
               <span className="flex items-center gap-1.5 font-medium text-slate-700">
                 <Banknote size={13} className="text-slate-400" />
-                Cash
+                {methodLabel}
               </span>
             </div>
           </div>
