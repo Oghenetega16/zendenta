@@ -66,7 +66,7 @@ export function Sidebar({
                 Avicena Clinic
               </p>
               <p className="truncate text-[11px] text-slate-400">
-                645 Euclid Avenue, CA
+                645 Euclid Avenue, NG
               </p>
             </div>
           )}

@@ -23,7 +23,7 @@ export function ProfileMenu() {
           DS
         </div>
         <div className="hidden text-left leading-tight md:block">
-          <p className="text-[13px] font-semibold text-slate-800">Darrell Steward</p>
+          <p className="text-[13px] font-semibold text-slate-800">Oghenetega Sukuru</p>
           <p className="text-[11px] text-slate-400">Super admin</p>
         </div>
         <ChevronDown

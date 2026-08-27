@@ -29,7 +29,7 @@ export function CreateMenu() {
   const { open, setOpen, ref, toggle } = usePopover<HTMLDivElement>();
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative ">
       <button
         onClick={toggle}
         title="Create new"
