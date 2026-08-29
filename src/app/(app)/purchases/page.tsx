@@ -74,62 +74,64 @@ export default function PurchasesPage() {
       )}
 
       <div className="rounded-2xl border border-slate-100 bg-white">
-        <table className="w-full min-w-[720px] border-collapse">
-          <thead>
-            <tr className="border-b border-slate-100 text-left text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
-              <th className="px-5 py-3">Order</th>
-              <th className="px-5 py-3">Item</th>
-              <th className="px-5 py-3">Supplier</th>
-              <th className="px-5 py-3">Qty</th>
-              <th className="px-5 py-3">Total</th>
-              <th className="px-5 py-3">Order Date</th>
-              <th className="px-5 py-3">Status</th>
-              <th className="px-5 py-3" />
-            </tr>
-          </thead>
-          <tbody>
-            {purchases.map((p) => {
-              const isPending = pendingId === p.id;
-              return (
-                <tr key={p.id} className="border-b border-slate-50 text-[13px] text-slate-600">
-                  <td className="px-5 py-3.5 font-medium text-slate-700">{p.id}</td>
-                  <td className="px-5 py-3.5">{p.item}</td>
-                  <td className="px-5 py-3.5 text-slate-500">{p.supplier}</td>
-                  <td className="px-5 py-3.5 text-slate-500">{p.quantity}</td>
-                  <td className="px-5 py-3.5 font-medium text-slate-700">
-                    {formatCurrency(p.total)}
-                  </td>
-                  <td className="px-5 py-3.5 text-slate-500">{p.orderDate}</td>
-                  <td className="px-5 py-3.5">
-                    {p.status === "received" ? (
-                      <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-600 uppercase">
-                        Received
-                      </span>
-                    ) : (
-                      <span className="inline-flex rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-600 uppercase">
-                        Pending
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-5 py-3.5">
-                    {p.status === "pending" && (
-                      <button
-                        onClick={() => receive(p)}
-                        disabled={isPending}
-                        title={`Mark ${p.id} as received`}
-                        aria-label={`Mark ${p.id} as received`}
-                        className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-indigo-500 disabled:cursor-wait disabled:opacity-70"
-                      >
-                        {isPending && <Loader2 size={12} className="animate-spin" />}
-                        Mark received
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px] border-collapse">
+            <thead>
+              <tr className="border-b border-slate-100 text-left text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+                <th className="px-5 py-3">Order</th>
+                <th className="px-5 py-3">Item</th>
+                <th className="px-5 py-3">Supplier</th>
+                <th className="px-5 py-3">Qty</th>
+                <th className="px-5 py-3">Total</th>
+                <th className="px-5 py-3">Order Date</th>
+                <th className="px-5 py-3">Status</th>
+                <th className="px-5 py-3" />
+              </tr>
+            </thead>
+            <tbody>
+              {purchases.map((p) => {
+                const isPending = pendingId === p.id;
+                return (
+                  <tr key={p.id} className="border-b border-slate-50 text-[13px] text-slate-600">
+                    <td className="px-5 py-3.5 font-medium text-slate-700">{p.id}</td>
+                    <td className="px-5 py-3.5">{p.item}</td>
+                    <td className="px-5 py-3.5 text-slate-500">{p.supplier}</td>
+                    <td className="px-5 py-3.5 text-slate-500">{p.quantity}</td>
+                    <td className="px-5 py-3.5 font-medium text-slate-700">
+                      {formatCurrency(p.total)}
+                    </td>
+                    <td className="px-5 py-3.5 text-slate-500">{p.orderDate}</td>
+                    <td className="px-5 py-3.5">
+                      {p.status === "received" ? (
+                        <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-600 uppercase">
+                          Received
+                        </span>
+                      ) : (
+                        <span className="inline-flex rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-600 uppercase">
+                          Pending
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-5 py-3.5">
+                      {p.status === "pending" && (
+                        <button
+                          onClick={() => receive(p)}
+                          disabled={isPending}
+                          title={`Mark ${p.id} as received`}
+                          aria-label={`Mark ${p.id} as received`}
+                          className="flex cursor-pointer items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-indigo-500 disabled:cursor-wait disabled:opacity-70"
+                        >
+                          {isPending && <Loader2 size={12} className="animate-spin" />}
+                          Mark received
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

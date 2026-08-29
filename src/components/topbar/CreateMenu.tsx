@@ -29,7 +29,7 @@ export function CreateMenu() {
   const { open, setOpen, ref, toggle } = usePopover<HTMLDivElement>();
 
   return (
-    <div ref={ref} className="relative ">
+    <div ref={ref} className="relative">
       <button
         onClick={toggle}
         title="Create new"
@@ -44,7 +44,7 @@ export function CreateMenu() {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-20 mt-2 w-60 overflow-hidden rounded-xl border border-slate-100 bg-white py-1.5 shadow-lg"
+          className="absolute right-0 z-20 mt-2 w-72 max-w-[90vw] overflow-hidden rounded-xl border border-slate-100 bg-white py-1.5 shadow-lg"
         >
           <p className="px-3.5 pt-1.5 pb-1 text-[10.5px] font-semibold tracking-wide text-slate-400 uppercase">
             Quick create

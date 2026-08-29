@@ -55,7 +55,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-5 pt-6">
       <div>
-        <h2 className="text-[15px] font-bold text-slate-800">Welcome back, Oghenetega</h2>
+        <h2 className="text-[15px] font-bold text-slate-800">Welcome back, Darrell</h2>
         <p className="text-[12.5px] text-slate-400">Here&apos;s an overview of the clinic&apos;s activity.</p>
       </div>
 

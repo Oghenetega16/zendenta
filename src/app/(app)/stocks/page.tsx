@@ -49,44 +49,46 @@ export default function StocksPage() {
       )}
 
       <div className="rounded-2xl border border-slate-100 bg-white">
-        <table className="w-full min-w-[600px] border-collapse">
-          <thead>
-            <tr className="border-b border-slate-100 text-left text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
-              <th className="px-5 py-3">Item</th>
-              <th className="px-5 py-3">Category</th>
-              <th className="px-5 py-3">On Hand</th>
-              <th className="px-5 py-3">Reorder At</th>
-              <th className="px-5 py-3">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {stocks.map((s) => {
-              const low = s.quantity <= s.reorderThreshold;
-              return (
-                <tr key={s.id} className="border-b border-slate-50 text-[13px] text-slate-600">
-                  <td className="px-5 py-3.5 font-medium text-slate-700">{s.name}</td>
-                  <td className="px-5 py-3.5 text-slate-500">{s.category}</td>
-                  <td className="px-5 py-3.5 text-slate-500">
-                    {s.quantity} {s.unit}
-                    {s.quantity === 1 ? "" : "s"}
-                  </td>
-                  <td className="px-5 py-3.5 text-slate-500">{s.reorderThreshold}</td>
-                  <td className="px-5 py-3.5">
-                    {low ? (
-                      <span className="inline-flex rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-500 uppercase">
-                        Low stock
-                      </span>
-                    ) : (
-                      <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-600 uppercase">
-                        In stock
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px] border-collapse">
+            <thead>
+              <tr className="border-b border-slate-100 text-left text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+                <th className="px-5 py-3">Item</th>
+                <th className="px-5 py-3">Category</th>
+                <th className="px-5 py-3">On Hand</th>
+                <th className="px-5 py-3">Reorder At</th>
+                <th className="px-5 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stocks.map((s) => {
+                const low = s.quantity <= s.reorderThreshold;
+                return (
+                  <tr key={s.id} className="border-b border-slate-50 text-[13px] text-slate-600">
+                    <td className="px-5 py-3.5 font-medium text-slate-700">{s.name}</td>
+                    <td className="px-5 py-3.5 text-slate-500">{s.category}</td>
+                    <td className="px-5 py-3.5 text-slate-500">
+                      {s.quantity} {s.unit}
+                      {s.quantity === 1 ? "" : "s"}
+                    </td>
+                    <td className="px-5 py-3.5 text-slate-500">{s.reorderThreshold}</td>
+                    <td className="px-5 py-3.5">
+                      {low ? (
+                        <span className="inline-flex rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-500 uppercase">
+                          Low stock
+                        </span>
+                      ) : (
+                        <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-600 uppercase">
+                          In stock
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

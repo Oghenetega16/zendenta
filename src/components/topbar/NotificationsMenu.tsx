@@ -29,7 +29,7 @@ export function NotificationsMenu() {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-20 mt-2 w-80 overflow-hidden rounded-xl border border-slate-100 bg-white shadow-lg"
+          className="absolute right-0 z-20 mt-2 w-96 max-w-[90vw] overflow-hidden rounded-xl border border-slate-100 bg-white shadow-lg"
         >
           <div className="flex items-center justify-between border-b border-slate-50 px-3.5 py-2.5">
             <p className="text-[10.5px] font-semibold tracking-wide text-slate-400 uppercase">

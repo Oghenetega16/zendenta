@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Search, X } from "lucide-react";
+import { Loader2, Menu, Search, X } from "lucide-react";
 import { fetchReservations } from "@/lib/api-client";
 import { formatCurrency } from "@/lib/utils";
 import { Reservation } from "@/types";
@@ -15,7 +15,13 @@ import { ProfileMenu } from "@/components/topbar/ProfileMenu";
 
 const MAX_RESULTS = 6;
 
-export function Topbar({ title }: { title: string }) {
+export function Topbar({
+  title,
+  onOpenSidebar,
+}: {
+  title: string;
+  onOpenSidebar: () => void;
+}) {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -130,11 +136,23 @@ export function Topbar({ title }: { title: string }) {
   const showDropdown = open && query.trim().length > 0;
 
   return (
-    <header className="flex items-center justify-between gap-4 px-8 py-5">
-      <h1 className="text-[22px] font-bold text-slate-900">{title}</h1>
+    <header className="flex items-center justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5 lg:px-8">
+      <div className="flex min-w-0 items-center gap-2">
+        <button
+          onClick={onOpenSidebar}
+          title="Open menu"
+          aria-label="Open menu"
+          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 lg:hidden"
+        >
+          <Menu size={19} />
+        </button>
+        <h1 className="truncate text-[17px] font-bold text-slate-900 sm:text-[20px] lg:text-[22px]">
+          {title}
+        </h1>
+      </div>
 
-      <div className="flex flex-1 items-center justify-end gap-3">
-        <div ref={containerRef} className="relative w-full max-w-[280px]">
+      <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
+        <div ref={containerRef} className="relative w-full max-w-[130px] sm:max-w-[220px] lg:max-w-[280px]">
           {loading ? (
             <Loader2
               size={15}
@@ -156,7 +174,7 @@ export function Topbar({ title }: { title: string }) {
             onFocus={() => {
               if (query.trim().length > 0) setOpen(true);
             }}
-            placeholder="Search for anything here..."
+            placeholder="Search..."
             title="Search reservations by patient name or ID"
             aria-label="Search reservations by patient name or ID"
             role="combobox"
@@ -182,7 +200,7 @@ export function Topbar({ title }: { title: string }) {
             <div
               id="topbar-search-results"
               role="listbox"
-              className="absolute z-20 mt-1.5 w-full overflow-hidden rounded-lg border border-slate-100 bg-white py-1 shadow-lg"
+              className="absolute left-0 z-20 mt-1.5 w-80 max-w-[85vw] overflow-hidden rounded-lg border border-slate-100 bg-white py-1 shadow-lg"
             >
               {error ? (
                 <p className="px-3.5 py-3 text-[12.5px] text-rose-500">
@@ -235,11 +253,12 @@ export function Topbar({ title }: { title: string }) {
 
         <CreateMenu />
 
+        <NotificationsMenu />
+
         <div className="hidden items-center gap-1 text-slate-400 sm:flex">
           <HelpMenu />
           <MarkedItemsMenu kind="bookmark" storageKey="zendenta_bookmarks" />
           <MarkedItemsMenu kind="flag" storageKey="zendenta_flags" />
-          <NotificationsMenu />
         </div>
 
         <ProfileMenu />

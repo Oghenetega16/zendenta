@@ -29,7 +29,7 @@ export function HelpMenu() {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-20 mt-2 w-64 overflow-hidden rounded-xl border border-slate-100 bg-white py-1.5 shadow-lg"
+          className="absolute right-0 z-20 mt-2 w-80 max-w-[90vw] overflow-hidden rounded-xl border border-slate-100 bg-white py-1.5 shadow-lg"
         >
           <Link
             href="/support"
