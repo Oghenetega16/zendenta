@@ -20,10 +20,10 @@ export function ProfileMenu() {
         className="flex cursor-pointer items-center gap-2.5"
       >
         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-amber-700 to-amber-900 text-xs font-semibold text-white">
-          DS
+          OS
         </div>
         <div className="hidden text-left leading-tight md:block">
-          <p className="text-[13px] font-semibold text-slate-800">Darrell Steward</p>
+          <p className="text-[13px] font-semibold text-slate-800">Oghenetega Sukuru</p>
           <p className="text-[11px] text-slate-400">Super admin</p>
         </div>
         <ChevronDown
